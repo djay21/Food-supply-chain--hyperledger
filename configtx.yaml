@@ -1,0 +1,351 @@
+Organizations:
+    - &OrdererOrg
+ 
+        Name: OrdererOrg
+        ID: OrdererMSP
+        MSPDir: crypto-config/ordererOrganizations/truesource.com/msp
+
+     
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('OrdererMSP.admin')"
+
+    - &foodproducer
+ 
+        Name: foodproducerMSP
+        ID: foodproducerMSP
+
+        MSPDir: crypto-config/peerOrganizations/foodproducer.truesource.com/msp
+
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('foodproducerMSP.admin', 'foodproducerMSP.peer', 'foodproducerMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('foodproducerMSP.admin', 'foodproducerMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('foodproducerMSP.admin')"
+
+        AnchorPeers:
+      
+            - Host: peer0.foodproducer.truesource.com
+              Port: 7051
+
+    - &distributor
+        Name: distributorMSP
+
+
+        ID: distributorMSP
+
+        MSPDir: crypto-config/peerOrganizations/distributor.truesource.com/msp
+
+     
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('distributorMSP.admin', 'distributorMSP.peer', 'distributorMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('distributorMSP.admin', 'distributorMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('distributorMSP.admin')"
+
+        AnchorPeers:
+            - Host: peer0.distributor.truesource.com
+              Port: 9051
+
+
+    - &foodprocessor
+        Name: foodprocessorMSP
+
+
+        ID: foodprocessorMSP
+
+        MSPDir: crypto-config/peerOrganizations/foodprocessor.truesource.com/msp
+
+     
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('foodprocessorMSP.admin', 'foodprocessorMSP.peer', 'foodprocessorMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('foodprocessorMSP.admin', 'foodprocessorMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('foodprocessorMSP.admin')"
+
+        AnchorPeers:
+            - Host: peer0.foodprocessor.truesource.com
+              Port: 9051
+
+    - &retailer
+        Name: retailerMSP
+
+
+        ID: retailerMSP
+
+        MSPDir: crypto-config/peerOrganizations/retailer.truesource.com/msp
+
+     
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('retailerMSP.admin', 'retailerMSP.peer', 'retailerMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('retailerMSP.admin', 'retailerMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('retailerMSP.admin')"
+
+        AnchorPeers:
+            - Host: peer0.retailer.truesource.com
+              Port: 9051
+
+    - &consumer
+        Name: consumerMSP
+
+
+        ID: consumerMSP
+
+        MSPDir: crypto-config/peerOrganizations/consumer.truesource.com/msp
+
+     
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('consumerMSP.admin', 'consumerMSP.peer', 'consumerMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('consumerMSP.admin', 'consumerMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('consumerMSP.admin')"
+
+        AnchorPeers:
+            - Host: peer0.consumer.truesource.com
+              Port: 9051
+
+
+
+Capabilities:
+    Channel: &ChannelCapabilities
+        V1_3: true
+
+ 
+    Orderer: &OrdererCapabilities
+        
+        V1_1: true
+    Application: &ApplicationCapabilities
+  
+        V1_3: true
+       
+        V1_2: false
+     
+        V1_1: false
+
+
+Application: &ApplicationDefaults
+
+
+    Organizations:
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+
+    Capabilities:
+        <<: *ApplicationCapabilities
+
+Orderer: &OrdererDefaults
+
+    # Orderer Type: The orderer implementation to start
+    # Available types are "solo" and "kafka"
+    OrdererType: solo
+
+    Addresses:
+        - orderer.truesource.com:7050
+
+    BatchTimeout: 2s
+
+    BatchSize:
+
+        MaxMessageCount: 10
+
+
+        AbsoluteMaxBytes: 99 MB
+
+        PreferredMaxBytes: 512 KB
+
+    Kafka:
+
+        Brokers:
+            - 127.0.0.1:9092
+    Organizations:
+
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+      
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+
+Channel: &ChannelDefaults
+    Policies:
+        
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+      
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+
+ 
+    Capabilities:
+        <<: *ChannelCapabilities
+
+
+Profiles:
+
+    TwoOrgsOrdererGenesis:
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+            Capabilities:
+                <<: *OrdererCapabilities
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *foodproducer
+                    - *distributor
+                    - *foodprocessor
+                    - *retailer
+                    - *consumer
+             
+    TwoOrgsChannel:
+        Consortium: SampleConsortium
+        <<: *ChannelDefaults
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *foodproducer
+                - *distributor
+                - *foodprocessor
+                - *retailer
+                - *consumer
+            Capabilities:
+                <<: *ApplicationCapabilities
+
+    SampleDevModeKafka:
+        <<: *ChannelDefaults
+        Capabilities:
+            <<: *ChannelCapabilities
+        Orderer:
+            <<: *OrdererDefaults
+            OrdererType: kafka
+            Kafka:
+                Brokers:
+                - kafka.truesource.com:9092
+
+            Organizations:
+            - *OrdererOrg
+            Capabilities:
+                <<: *OrdererCapabilities
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+            - <<: *OrdererOrg
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                - *foodproducer
+                - *distributor
+                - *foodprocessor
+                - *retailer
+                - *consumer
+
+    SampleMultiNodeEtcdRaft:
+        <<: *ChannelDefaults
+        Capabilities:
+            <<: *ChannelCapabilities
+        Orderer:
+            <<: *OrdererDefaults
+            OrdererType: etcdraft
+            EtcdRaft:
+                Consenters:
+                - Host: orderer.truesource.com
+                  Port: 7050
+                  ClientTLSCert: crypto-config/ordererOrganizations/truesource.com/orderers/orderer.truesource.com/tls/server.crt
+                  ServerTLSCert: crypto-config/ordererOrganizations/truesource.com/orderers/orderer.truesource.com/tls/server.crt
+                - Host: orderer2.truesource.com
+                  Port: 7050
+                  ClientTLSCert: crypto-config/ordererOrganizations/truesource.com/orderers/orderer2.truesource.com/tls/server.crt
+                  ServerTLSCert: crypto-config/ordererOrganizations/truesource.com/orderers/orderer2.truesource.com/tls/server.crt
+                - Host: orderer3.truesource.com
+                  Port: 7050
+                  ClientTLSCert: crypto-config/ordererOrganizations/truesource.com/orderers/orderer3.truesource.com/tls/server.crt
+                  ServerTLSCert: crypto-config/ordererOrganizations/truesource.com/orderers/orderer3.truesource.com/tls/server.crt
+                - Host: orderer4.truesource.com
+                  Port: 7050
+                  ClientTLSCert: crypto-config/ordererOrganizations/truesource.com/orderers/orderer4.truesource.com/tls/server.crt
+                  ServerTLSCert: crypto-config/ordererOrganizations/truesource.com/orderers/orderer4.truesource.com/tls/server.crt
+                - Host: orderer5.truesource.com
+                  Port: 7050
+                  ClientTLSCert: crypto-config/ordererOrganizations/truesource.com/orderers/orderer5.truesource.com/tls/server.crt
+                  ServerTLSCert: crypto-config/ordererOrganizations/truesource.com/orderers/orderer5.truesource.com/tls/server.crt
+            Addresses:
+                - orderer.truesource.com:7050
+                - orderer2.truesource.com:7050
+                - orderer3.truesource.com:7050
+                - orderer4.truesource.com:7050
+                - orderer5.truesource.com:7050
+
+            Organizations:
+            - *OrdererOrg
+            Capabilities:
+                <<: *OrdererCapabilities
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+            - <<: *OrdererOrg
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                - *foodproducer
+                - *distributor
+                - *foodprocessor
+                - *retailer
+                - *consumer
