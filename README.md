@@ -29,6 +29,7 @@ To Download latest docker images for fabric
 
 
 					****To start Node Api****
+#    npm i					
 #    Nodemon app									
 
 
