@@ -1,0 +1,130 @@
+##Step 1.
+
+curl -s -X POST http://localhost:4000/users -H "content-type: application/x-www-form-urlencoded" -d 'username=Jim&orgName=Org1'
+
+
+
+##Step 2. ************** CREATE CHANNEL ***********
+
+curl -s -X POST \
+  http://localhost:4000/channels \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjMzNzU3MzksInVzZXJuYW1lIjoiYWRtaW4iLCJvcmdOYW1lIjoiZm9vZHByb2R1Y2VyIiwiaWF0IjoxNTYzMzM5NzM5fQ.1H6nnBe3vC1SSVC8T-Bfrfy9k0GJLZmXeNRqgA6QUXY" \
+  -H "content-type: application/json" \
+  -d '{
+	"channelName":"mychannel",
+	"channelConfigPath":"../artifacts/channel/channel.tx"
+}'
+
+
+
+##Step 3.  **************JOIN CHANNEL **************
+
+curl -s -X POST \
+  http://localhost:4000/channels/mychannel/peers \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjMzNzU3MzksInVzZXJuYW1lIjoiYWRtaW4iLCJvcmdOYW1lIjoiZm9vZHByb2R1Y2VyIiwiaWF0IjoxNTYzMzM5NzM5fQ.1H6nnBe3vC1SSVC8T-Bfrfy9k0GJLZmXeNRqgA6QUXY" \
+  -H "content-type: application/json" \
+  -d '{
+	"peers": ["peer0.foodproducer.truesource.com"]
+}'
+
+
+
+
+##Step 4. **************INSTALL CHAINCODE********
+
+curl -s -X POST \
+  http://localhost:4000/chaincodes \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjMzNzU3MzksInVzZXJuYW1lIjoiYWRtaW4iLCJvcmdOYW1lIjoiZm9vZHByb2R1Y2VyIiwiaWF0IjoxNTYzMzM5NzM5fQ.1H6nnBe3vC1SSVC8T-Bfrfy9k0GJLZmXeNRqgA6QUXY" \
+  -H "content-type: application/json" \
+  -d '{
+	"peers": ["peer0.foodproducer.truesource.com"],
+	"chaincodeName":"fabb",
+	"chaincodePath":"github.com/truesource_cc/go",
+	"chaincodeType": "golang",
+	"chaincodeVersion":"v0"
+}'
+
+
+
+
+
+##Step 5. *************INSTANTIATE CHAINCODE*********
+
+
+curl -s -X POST \
+  http://localhost:4000/channels/mychannel/chaincodes \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjMzNzU3MzksInVzZXJuYW1lIjoiYWRtaW4iLCJvcmdOYW1lIjoiZm9vZHByb2R1Y2VyIiwiaWF0IjoxNTYzMzM5NzM5fQ.1H6nnBe3vC1SSVC8T-Bfrfy9k0GJLZmXeNRqgA6QUXY" \
+  -H "content-type: application/json" \
+  -d '{
+  	"peers": ["peer0.retailer.truesource.com"],
+	"chaincodeName":"fabb",
+	"chaincodeVersion":"v0",
+	"chaincodeType": "golang",
+	"args":["initLedger"]
+}'
+
+
+
+
+##Step 6. ****************** INVOKE REQUEST *****************
+
+
+curl -s -X POST \
+  http://localhost:4000/channels/mychannel/chaincodes/fabb \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjI5NDQ0MjEsInVzZXJuYW1lIjoiYWRtaW4iLCJvcmdOYW1lIjoiZm9vZHByb2R1Y2VyIiwiaWF0IjoxNTYyOTA4NDIxfQ.9h3txeNg24d3GRjOf-4Se7d8_ozKza2EL0LCeld_Bgc" \
+  -H "content-type: application/json" \
+  -d '{
+  	"peers": ["peer0.foodproducer.truesource.com"],
+	"fcn":"initLedger",
+	"args":["initLedger"]
+}'
+
+
+
+
+
+
+
+
+
+
+
+
+
+##Step 7. *********************** CHAINCODE QUERY********
+
+curl -s -X GET \
+  "http://localhost:4000/channels/mychannel/chaincodes/mycc?peer=peer0.foodproducer.truesource.com&fcn=query&args=%5B%22a%22%5D" \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjIzMzc3NDAsInVzZXJuYW1lIjoiYWRtaW4iLCJvcmdOYW1lIjoiZm9vZHByb2R1Y2VyIiwiaWF0IjoxNTYyMzAxNzQwfQ.i4asC5PGSNwv5fKkVTps7Fg4CVnTnsEGyNi3GG7xoGE" \
+  -H "content-type: application/json"
+
+
+
+
+
+
+
+
+
+
+
+
+
+##Step 8. ******************* QUERY BY TRANSAACTION ID *********************************
+
+
+
+curl -s -X GET http://localhost:4000/channels/mychannel/transactions/fde5e8d6c941744f3e6bd27fa44be0e3fd5871a9f4a9b41026bb8828e9c59cd1?peer=peer0.foodproducer.truesource.com \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjIzNDM1NzcsInVzZXJuYW1lIjoiYWRtaW4iLCJvcmdOYW1lIjoiZm9vZHByb2R1Y2VyIiwiaWF0IjoxNTYyMzA3NTc3fQ.zi_-TMaE2qzxWYDMBkDJBNry-UjQN6lFjq3bvZHGQeI" \
+  -H "content-type: application/json"
+
+
+
+
+##Step 9.
+
+curl -s -X GET \
+  "http://localhost:4000/channels?peer=peer0.distributor.truesource.com" \
+  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjIyNjkwODgsInVzZXJuYW1lIjoiYWRtaW4iLCJvcmdOYW1lIjoiZGlzdHJpYnV0b3IiLCJpYXQiOjE1NjIyMzMwODh9.dVUpB78w34mIT3tZHsLYJfM6c0mdV8knDu0Za7oSx7M" \
+  -H "content-type: application/json"
+##Step 1.
