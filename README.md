@@ -39,7 +39,8 @@ To Download latest docker images for fabric
 
 Now you are ready to hit your Api's to get/post data in the **Hyperledger fabric network**
 
-Kindly Refer to the attached file  **postman commands **
+Kindly Refer to the attached file.
+**postman commands **
 
 
 
@@ -51,5 +52,5 @@ Kindly Refer to the attached file  **postman commands **
 To lean the network
 The network will still be running at this point. Before starting the network manually again, here are the commands which cleans the containers and artifacts.
 
-**docker rm -f $(docker ps -aq)
+**docker rm -f $(docker ps -aq)**
 
