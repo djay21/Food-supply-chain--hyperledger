@@ -1,0 +1,259 @@
+#
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+version: '2'
+
+services:
+
+  ca.foodproducer.truesource.com:
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-foodproducer
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.foodproducer.truesource.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/3d85fdbb52126d063eaf5e9d43b502931f21d85562bb41942ad97b2257b54ad0_sk
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.foodproducer.truesource.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/3d85fdbb52126d063eaf5e9d43b502931f21d85562bb41942ad97b2257b54ad0_sk
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ./channel/crypto-config/peerOrganizations/foodproducer.truesource.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerfoodproducer
+
+  ca.distributor.truesource.com:
+    image: hyperledger/fabric-ca
+    environment:
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-distributor
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.distributor.truesource.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/5375a6a408db1e52ad2ea0568a6d8fc009f41f947b64f392b19e0c867ba3a100_sk
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.distributor.truesource.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/5375a6a408db1e52ad2ea0568a6d8fc009f41f947b64f392b19e0c867ba3a100_sk
+    ports:
+      - "8054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ./channel/crypto-config/peerOrganizations/distributor.truesource.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerdistributor
+    
+    
+  
+  ca.foodprocessor.truesource.com:
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-foodprocessor
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.foodprocessor.truesource.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/548d64f4dc40102ffdd000f73a0315ab2484da74aee85f1937627db3253df192_sk
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.foodprocessor.truesource.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/548d64f4dc40102ffdd000f73a0315ab2484da74aee85f1937627db3253df192_sk
+    ports:
+      - "9054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ./channel/crypto-config/peerOrganizations/foodprocessor.truesource.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerfoodprocessor
+
+  ca.retailer.truesource.com:
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-retailer
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.retailer.truesource.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/e26cfd65c2b297344a50917515d3e7f4cb62711d25c0b5fd788fa903418222d8_sk
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.retailer.truesource.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/e26cfd65c2b297344a50917515d3e7f4cb62711d25c0b5fd788fa903418222d8_sk
+    ports:
+      - "1054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ./channel/crypto-config/peerOrganizations/retailer.truesource.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerretailer
+
+  ca.consumer.truesource.com:
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-consumer
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.consumer.truesource.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/a29c6c7d6cbda02029b232f5269a7965e9c9d2d4eab49f06aa81a4d1ded6811d_sk
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.consumer.truesource.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/a29c6c7d6cbda02029b232f5269a7965e9c9d2d4eab49f06aa81a4d1ded6811d_sk
+    ports:
+      - "1154:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ./channel/crypto-config/peerOrganizations/consumer.truesource.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerconsumer
+
+
+  orderer.truesource.com:
+    container_name: orderer.truesource.com
+    image: hyperledger/fabric-orderer
+    environment:
+      - FABRIC_LOGGING_SPEC=debug
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/orderer/msp
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt]
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderers
+    command: orderer
+    ports:
+      - 7050:7050
+    volumes:
+        - ./channel:/etc/hyperledger/configtx
+        - ./channel/genesis.block:/etc/hyperledger/configtx/genesis.block
+        - ./channel/crypto-config/ordererOrganizations/truesource.com/orderers/orderer.truesource.com/msp:/etc/hyperledger/crypto/orderer/msp
+        - ./channel/crypto-config/ordererOrganizations/truesource.com/orderers/orderer.truesource.com/tls:/etc/hyperledger/crypto/orderer/tls
+
+  peer0.foodproducer.truesource.com:
+    container_name: peer0.foodproducer.truesource.com
+    extends:
+      file:   base.yaml
+      service: peer-base
+    environment:
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
+      - CORE_PEER_ID=peer0.foodproducer.truesource.com
+      - CORE_PEER_LOCALMSPID=foodproducerMSP
+      - CORE_PEER_ADDRESS=peer0.foodproducer.truesource.com:7051  
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.foodproducer.truesource.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.foodproducer.truesource.com:7051
+    ports:
+      - 7051:7051
+      - 7053:7053
+    volumes:
+        - ./channel/crypto-config/peerOrganizations/foodproducer.truesource.com/peers/peer0.foodproducer.truesource.com/msp:/etc/hyperledger/crypto/peer/msp
+        - ./channel/crypto-config/peerOrganizations/foodproducer.truesource.com/peers/peer0.foodproducer.truesource.com/tls:/etc/hyperledger/crypto/peer/tls
+
+    depends_on:
+      - orderer.truesource.com
+      - couchdb0
+
+  peer0.distributor.truesource.com:
+    container_name: peer0.distributor.truesource.com
+    extends:
+      file:   base.yaml
+      service: peer-base
+    environment:
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
+      - CORE_PEER_ID=peer0.distributor.truesource.com
+      - CORE_PEER_LOCALMSPID=distributorMSP
+      - CORE_PEER_ADDRESS=peer0.distributor.truesource.com:7051   
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.distributor.truesource.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.distributor.truesource.com:7051
+    ports:
+      - 7052:7051
+      - 7055:7053
+    volumes:
+        - ./channel/crypto-config/peerOrganizations/distributor.truesource.com/peers/peer0.distributor.truesource.com/msp:/etc/hyperledger/crypto/peer/msp
+        - ./channel/crypto-config/peerOrganizations/distributor.truesource.com/peers/peer0.distributor.truesource.com/tls:/etc/hyperledger/crypto/peer/tls
+    depends_on:
+      - orderer.truesource.com
+      - couchdb0
+      
+      
+  peer0.foodprocessor.truesource.com:
+    container_name: peer0.foodprocessor.truesource.com
+    extends:
+      file:   base.yaml
+      service: peer-base
+    environment:
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
+      - CORE_PEER_ID=peer0.foodprocessor.truesource.com
+      - CORE_PEER_LOCALMSPID=foodprocessorMSP
+      - CORE_PEER_ADDRESS=peer0.foodprocessor.truesource.com:7051  
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.foodprocessor.truesource.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.foodprocessor.truesource.com:7051
+    ports:
+      - 7056:7051
+      - 7057:7053
+    volumes:
+        - ./channel/crypto-config/peerOrganizations/foodprocessor.truesource.com/peers/peer0.foodprocessor.truesource.com/msp:/etc/hyperledger/crypto/peer/msp
+        - ./channel/crypto-config/peerOrganizations/foodprocessor.truesource.com/peers/peer0.foodprocessor.truesource.com/tls:/etc/hyperledger/crypto/peer/tls
+      
+    depends_on:
+      - orderer.truesource.com
+      - couchdb0
+
+  
+  peer0.retailer.truesource.com:
+    container_name: peer0.retailer.truesource.com
+    extends:
+      file:   base.yaml
+      service: peer-base
+    environment:
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
+      - CORE_PEER_ID=peer0.retailer.truesource.com
+      - CORE_PEER_LOCALMSPID=retailerMSP
+      - CORE_PEER_ADDRESS=peer0.retailer.truesource.com:7051   
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.retailer.truesource.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.retailer.truesource.com:7051
+    ports:
+      - 7058:7051
+      - 7059:7053
+    volumes:
+        - ./channel/crypto-config/peerOrganizations/retailer.truesource.com/peers/peer0.retailer.truesource.com/msp:/etc/hyperledger/crypto/peer/msp
+        - ./channel/crypto-config/peerOrganizations/retailer.truesource.com/peers/peer0.retailer.truesource.com/tls:/etc/hyperledger/crypto/peer/tls
+
+    depends_on:
+      - orderer.truesource.com
+      - couchdb0
+
+  
+  peer0.consumer.truesource.com:
+    container_name: peer0.consumer.truesource.com
+    extends:
+      file:   base.yaml
+      service: peer-base
+    environment:
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
+      - CORE_PEER_ID=peer0.consumer.truesource.com
+      - CORE_PEER_LOCALMSPID=consumerMSP
+      - CORE_PEER_ADDRESS=peer0.consumer.truesource.com:7051   
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.consumer.truesource.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.consumer.truesource.com:7051
+    ports:
+      - 7060:7051
+      - 7061:7053
+    volumes:
+        - ./channel/crypto-config/peerOrganizations/consumer.truesource.com/peers/peer0.consumer.truesource.com/msp:/etc/hyperledger/crypto/peer/msp
+        - ./channel/crypto-config/peerOrganizations/consumer.truesource.com/peers/peer0.consumer.truesource.com/tls:/etc/hyperledger/crypto/peer/tls
+
+    depends_on:
+      - orderer.truesource.com
+      - couchdb0
+
+
+  couchdb0:
+    container_name: couchdb0
+    image: hyperledger/fabric-couchdb
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+   # environment:
+   #   - COUCHDB_USER=
+   #   - COUCHDB_PASSWORD=
+    # Comment/Uncomment the port mapping if you want to hide/expose the CouchDB service,
+    # for example map it to utilize Fauxton User Interface in dev environments.
+    ports:
+      - "5984:5984"
+    
